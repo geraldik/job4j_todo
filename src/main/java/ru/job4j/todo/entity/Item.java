@@ -5,17 +5,17 @@ import lombok.*;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "items")
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"created", "description"})
-@Data
+@Getter
+@Setter
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "items_id")
     private int id;
 
     private String name;
@@ -24,6 +24,11 @@ public class Item {
     private Timestamp created = Timestamp.valueOf(LocalDateTime.now());
 
     private boolean done;
+
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "account_id", referencedColumnName = "account_id")
+    private Account account;
 
     public Item(int id, String description) {
         this.id = id;

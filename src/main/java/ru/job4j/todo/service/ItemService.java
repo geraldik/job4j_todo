@@ -1,6 +1,7 @@
 package ru.job4j.todo.service;
 
 import org.springframework.stereotype.Service;
+import ru.job4j.todo.entity.Account;
 import ru.job4j.todo.entity.Item;
 import ru.job4j.todo.store.ItemStore;
 
@@ -31,16 +32,16 @@ public class ItemService {
         store.setItemIsDone(item);
     }
 
-    public Collection<Item> findAll() {
-        return store.findAll();
+    public Collection<Item> findAll(Account account) {
+        return store.findAll(account);
     }
 
-    public Collection<Item> findNew() {
-        return store.findNew();
+    public Collection<Item> findNew(Account account) {
+        return store.findNew(account);
     }
 
-    public Collection<Item> findCompleted() {
-        return store.findCompleted();
+    public Collection<Item> findCompleted(Account account) {
+        return store.findCompleted(account);
     }
 
     public Item findById(int id) {

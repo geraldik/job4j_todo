@@ -31,9 +31,9 @@
             <div class="navbar-nav">
                 <a class="nav-item nav-link" th:href="@{/index}">Главная</a>
                 <a class="nav-item nav-link" th:href="@{/allItems}">Список всех задач</a>
-                <a class="nav-item nav-link" th:href="@{/complitedItems}">Завершенные</a>
+                <a class="nav-item nav-link" th:href="@{/completedItems}">Завершенные</a>
                 <a class="nav-item nav-link" th:href="@{/newItems}">Новые</a>
-                <a class="nav-item nav-link active" th:href="@{/formAddItem}">Добавить задачу</a>
+                <a class="nav-item nav-link" th:href="@{/formAddItem}">Добавить задачу</a>
                 <a class="nav-item nav-link" th:if="${account.name == 'Гость'}" th:href="@{/loginPage}">
                     <span th:text="${account.name}"></span>
                     <span> | Войти</span>
@@ -45,26 +45,9 @@
             </div>
         </div>
     </nav>
-    <div class="row pt-3">
-        <div class="card" style="width: 100%">
-            <div class="card-header">
-                Новая задача.
-            </div>
-            <div class="card-body">
-                <form th:action="@{/createItem}" method="POST">
-                    <div class="form-group">
-                        <label for="name">Название задачи</label>
-                        <input type="text" class="form-control" name="name" id="name">
-                    </div>
-                    <div class="form-group">
-                        <label for="name">Описание</label>
-                        <input type="text" class="form-control" name="description" id="description">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Сохранить</button>
-                </form>
-            </div>
-        </div>
-    </div>
+</div>
+<div>
+    <span th:text="${message}"/>
 </div>
 </body>
 </html>

@@ -34,7 +34,7 @@
                 <a class="nav-item nav-link" th:href="@{/complitedItems}">Завершенные</a>
                 <a class="nav-item nav-link" th:href="@{/newItems}">Новые</a>
                 <a class="nav-item nav-link active" th:href="@{/formAddItem}">Добавить задачу</a>
-                <a class="nav-item nav-link" th:if="${account.name == 'Гость'}" th:href="@{/loginPage}">
+                <a class="nav-item nav-link active" th:if="${account.name == 'Гость'}" th:href="@{/loginPage}">
                     <span th:text="${account.name}"></span>
                     <span> | Войти</span>
                 </a>
@@ -48,17 +48,22 @@
     <div class="row pt-3">
         <div class="card" style="width: 100%">
             <div class="card-header">
-                Новая задача.
+                Регистрация пользователя.
             </div>
             <div class="card-body">
-                <form th:action="@{/createItem}" method="POST">
+                <form th:action="@{/registration}" method="POST">
                     <div class="form-group">
-                        <label for="name">Название задачи</label>
+                        <input type="hidden" name="id" value="0"/>
+                        <label for="name">Имя пользователя</label>
                         <input type="text" class="form-control" name="name" id="name">
                     </div>
                     <div class="form-group">
-                        <label for="name">Описание</label>
-                        <input type="text" class="form-control" name="description" id="description">
+                        <label for="name">Логин</label>
+                        <input type="text" class="form-control" name="login" id="login">
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Пароль</label>
+                        <input type="text" class="form-control" name="password" id="password">
                     </div>
                     <button type="submit" class="btn btn-primary">Сохранить</button>
                 </form>

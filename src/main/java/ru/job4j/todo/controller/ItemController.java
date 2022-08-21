@@ -6,9 +6,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import ru.job4j.todo.entity.Account;
 import ru.job4j.todo.entity.Item;
 import ru.job4j.todo.service.ItemService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 
 @Controller
@@ -21,32 +24,46 @@ public class ItemController {
     }
 
     @GetMapping("/allItems")
-    public String allItems(Model model) {
-        model.addAttribute("items", itemService.findAll());
+    public String allItems(Model model, HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        SessionControl.getUserSession(model, session);
+        Account account = (Account) session.getAttribute("account");
+        model.addAttribute("items", itemService.findAll(account));
         return "allItems";
     }
 
     @GetMapping("/completedItems")
-    public String completedItems(Model model) {
-        model.addAttribute("items", itemService.findCompleted());
+    public String completedItems(Model model, HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        SessionControl.getUserSession(model, session);
+        Account account = (Account) session.getAttribute("account");
+        model.addAttribute("items", itemService.findCompleted(account));
         return "completedItems";
     }
 
     @GetMapping("/newItems")
-    public String items(Model model) {
-        model.addAttribute("items", itemService.findNew());
+    public String items(Model model, HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        SessionControl.getUserSession(model, session);
+        Account account = (Account) session.getAttribute("account");
+        model.addAttribute("items", itemService.findNew(account));
         return "newItems";
     }
 
 
     @PostMapping("/createItem")
-    public String createItem(@ModelAttribute Item item) {
+    public String createItem(@ModelAttribute Item item, Model model, HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        SessionControl.getUserSession(model, session);
+        Account account = (Account) session.getAttribute("account");
+        item.setAccount(account);
         itemService.create(item);
         return "redirect:/allItems";
     }
 
     @GetMapping("/formUpdateItem/{itemId}")
-    public String formUpdateItem(Model model, @PathVariable("itemId") int id) {
+    public String formUpdateItem(@PathVariable("itemId") int id, Model model, HttpSession session) {
+        SessionControl.getUserSession(model, session);
         model.addAttribute("item", itemService.findById(id));
         return "updateItem";
     }
@@ -58,12 +75,14 @@ public class ItemController {
     }
 
     @GetMapping("/formAddItem")
-    public String formAddPost() {
+    public String formAddPost(Model model, HttpSession session) {
+        SessionControl.getUserSession(model, session);
         return "addItem";
     }
 
     @GetMapping("/complete/{itemId}")
-    public String completeItem(@PathVariable("itemId") int id) {
+    public String completeItem(@PathVariable("itemId") int id, Model model, HttpSession session) {
+        SessionControl.getUserSession(model, session);
         itemService.setItemIsDone(itemService.findById(id));
         return "redirect:/allItems";
     }
@@ -75,7 +94,8 @@ public class ItemController {
     }
 
     @GetMapping("/itemDetails/{itemId}")
-    public String itemDetails(@PathVariable("itemId") int id, Model model) {
+    public String itemDetails(@PathVariable("itemId") int id, Model model, HttpSession session) {
+        SessionControl.getUserSession(model, session);
         model.addAttribute("item", itemService.findById(id));
         return "itemDetails";
     }
