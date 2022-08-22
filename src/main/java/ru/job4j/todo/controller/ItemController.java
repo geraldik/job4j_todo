@@ -29,6 +29,7 @@ public class ItemController {
         SessionControl.getUserSession(model, session);
         Account account = (Account) session.getAttribute("account");
         model.addAttribute("items", itemService.findAll(account));
+        model.addAttribute("account", account);
         return "allItems";
     }
 
@@ -38,6 +39,7 @@ public class ItemController {
         SessionControl.getUserSession(model, session);
         Account account = (Account) session.getAttribute("account");
         model.addAttribute("items", itemService.findCompleted(account));
+        model.addAttribute("account", account);
         return "completedItems";
     }
 
@@ -47,6 +49,7 @@ public class ItemController {
         SessionControl.getUserSession(model, session);
         Account account = (Account) session.getAttribute("account");
         model.addAttribute("items", itemService.findNew(account));
+        model.addAttribute("account", account);
         return "newItems";
     }
 

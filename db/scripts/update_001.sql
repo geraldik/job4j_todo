@@ -11,6 +11,6 @@ CREATE TABLE IF NOT EXISTS items
     name        varchar(50),
     description text,
     created     timestamp,
-    done        boolean,
-    account_id int REFERENCES account(account_id)
+    done        boolean
 );
+ALTER TABLE items ADD COLUMN account_id int REFERENCES account(account_id);
