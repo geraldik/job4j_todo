@@ -69,7 +69,11 @@ public class ItemController {
     }
 
     @PostMapping("/updateItem")
-    public String updateItem(@ModelAttribute Item item) {
+    public String updateItem(@ModelAttribute Item item,  Model model, HttpServletRequest req) {
+        HttpSession session = req.getSession();
+        SessionControl.getUserSession(model, session);
+        Account account = (Account) session.getAttribute("account");
+        item.setAccount(account);
         itemService.update(item);
         return "redirect:/allItems";
     }
