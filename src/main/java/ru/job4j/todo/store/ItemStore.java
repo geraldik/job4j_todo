@@ -1,13 +1,14 @@
 package ru.job4j.todo.store;
 
+import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
 import ru.job4j.todo.entity.Account;
 import ru.job4j.todo.entity.Item;
 
 import java.util.List;
+import java.util.function.Function;
 
 @Repository
 public class ItemStore {
@@ -18,83 +19,89 @@ public class ItemStore {
         this.sf = sf;
     }
 
-    public Item create(Item item) {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        session.save(item);
-        session.getTransaction().commit();
-        session.close();
-        return item;
+    public Item create(final Item save) {
+        return this.tx(
+                session -> {
+                    session.save(save);
+                    return save;
+                }
+        );
     }
 
-    public void update(Item item) {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        session.update(item);
-        session.getTransaction().commit();
-        session.close();
+    public void update(final Item item) {
+        this.tx(
+                session -> {
+                    session.update(item);
+                    return session;
+                }
+        );
     }
 
-    public void delete(Item item) {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        session.delete(item);
-        session.getTransaction().commit();
-        session.close();
+    public void delete(final Item item) {
+        this.tx(
+                session -> {
+                    session.delete(item);
+                    return session;
+                }
+        );
     }
 
-    public void setItemIsDone(Item item) {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        item.setDone(true);
-        session.update(item);
-        session.getTransaction().commit();
-        session.close();
+    public void setItemIsDone(final Item item) {
+        this.tx(
+                session -> {
+                    item.setDone(true);
+                    session.update(item);
+                    return session;
+                }
+        );
     }
 
-    public List<Item> findAll(Account account) {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        List<Item> result =
-                session.createQuery("from Item  i where i.account = :account", Item.class)
+    public List<Item> findAll(final Account account) {
+        return this.tx(
+                session -> session.createQuery("from Item  i where i.account = :account", Item.class)
                         .setParameter("account", account)
-                        .list();
-        session.getTransaction().commit();
-        session.close();
-        return result;
+                        .list()
+        );
     }
 
-    public List<Item> findNew(Account account) {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        List<Item> result =
-                session.createQuery("from Item i where i.done = false and i.account = :account",
-                        Item.class)
-                        .setParameter("account", account)
-                        .list();
-        session.close();
-        return result;
-    }
-
-    public List<Item> findCompleted(Account account) {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        List<Item> result =
-                session.createQuery("from Item i where i.done = true and i.account = :account",
+    public List<Item> findNew(final Account account) {
+        return this.tx(
+                session -> session.createQuery("from Item i where i.done = false and i.account = :account",
                                 Item.class)
                         .setParameter("account", account)
-                        .list();
-        session.close();
-        return result;
+                        .list()
+        );
     }
 
-    public Item findById(int id) {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        Query query = session.createQuery("from Item i where i.id = :fId", Item.class)
-                .setParameter("fId", id);
-        Item result = (Item) query.uniqueResult();
-        session.close();
-        return result;
+    public List<Item> findCompleted(final Account account) {
+        return this.tx(
+                session -> session.createQuery("from Item i where i.done = true and i.account = :account",
+                                Item.class)
+                        .setParameter("account", account)
+                        .list()
+        );
+    }
+
+    public Item findById(final int id) {
+        return this.tx(
+                session -> session.createQuery("from Item i where i.id = :fId", Item.class)
+                        .setParameter("fId", id)
+                        .uniqueResult()
+        );
+    }
+
+    private <T> T tx(final Function<Session, T> command) {
+        final Session session = sf.openSession();
+        final Transaction tx = session.beginTransaction();
+        try {
+            T rsl = command.apply(session);
+            tx.commit();
+            return rsl;
+        } catch (final Exception e) {
+            session.getTransaction().rollback();
+            throw e;
+        } finally {
+            session.close();
+        }
     }
 }
