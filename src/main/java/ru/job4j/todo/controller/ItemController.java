@@ -91,7 +91,6 @@ public class ItemController {
     public String completeItem(@PathVariable("itemId") int id, Model model, HttpSession session) {
         SessionControl.getUserSession(model, session);
         itemService.completeItem(id);
-//        itemService.setItemIsDone(itemService.findById(id));
         return "redirect:/allItems";
     }
 
