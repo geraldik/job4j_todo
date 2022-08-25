@@ -1,80 +1,86 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-          integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-          crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-          integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-          crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-          integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-          crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <title>TODO list</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>TODO list</title>
 </head>
 <body>
 <div class="container">
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">TODO список</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
-            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <a class="nav-item nav-link" th:href="@{/index}">Главная</a>
-        <a class="nav-item nav-link" th:href="@{/allItems}">Список всех задач</a>
-        <a class="nav-item nav-link" th:href="@{/completedItems}">Завершенные</a>
-        <a class="nav-item nav-link" th:href="@{/newItems}">Новые</a>
-        <a class="nav-item nav-link" th:href="@{/formAddItem}">Добавить задачу</a>
-        <a class="nav-item nav-link" th:href="@{/formRegistration}">Регистрация</a>
-        <a class="nav-item nav-link" th:if="${account.name == 'Гость'}" th:href="@{/loginPage}">
-          <span th:text="${account.name}"></span>
-          <span> | Войти</span>
-        </a>
-        <a class="nav-item nav-link" th:if="${account.name != 'Гость'}" th:href="@{/logout}">
-          <span th:text="${account.name}"></span>
-          <span> | Выйти</span>
-        </a>
-      </div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">TODO список</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link" th:href="@{/index}">Главная</a>
+                <a class="nav-item nav-link" th:href="@{/allItems}">Список всех задач</a>
+                <a class="nav-item nav-link" th:href="@{/completedItems}">Завершенные</a>
+                <a class="nav-item nav-link" th:href="@{/newItems}">Новые</a>
+                <a class="nav-item nav-link" th:href="@{/formAddItem}">Добавить задачу</a>
+                <a class="nav-item nav-link" th:href="@{/formRegistration}">Регистрация</a>
+                <a class="nav-item nav-link" th:if="${account.name == 'Гость'}" th:href="@{/loginPage}">
+                    <span th:text="${account.name}"></span>
+                    <span> | Войти</span>
+                </a>
+                <a class="nav-item nav-link" th:if="${account.name != 'Гость'}" th:href="@{/logout}">
+                    <span th:text="${account.name}"></span>
+                    <span> | Выйти</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+    <div class="row">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Название</th>
+                <th scope="col">Описание</th>
+                <th scope="col">Дата создания</th>
+                <th scope="col">Состояние</th>
+            </tr>
+            </thead>
+            <tbody>
+            <td th:text="${item.id}"></td>
+            <td th:text="${item.name}"></td>
+            <td th:text="${item.description}"></td>
+            <td th:text="${#temporals.format(item.created, 'dd-MM-yyyy HH:mm')}"></td>
+            <td>
+                <span th:text="${item.done} ? 'Завершена' : 'Не завершена'"></span>
+            </td>
+            </tbody>
+        </table>
+        <span th:if="${!item.done}">
+            <form th:action="@{|/complete/${item.id}|}" method="post">
+                <input type="submit" class="btn btn-primary" value="Завершить задачу"/>
+            </form>
+        </span>
+        <span th:if="${!item.done}">
+            <form th:action="@{|/formUpdateItem/${item.id}|}" method="get">
+                <input type="submit" class="btn btn-primary" value="Изменить задачу"/>
+            </form>
+        </span>
+        <form th:action="@{|/delete/${item.id}|}" method="post">
+            <input type="submit" class="btn btn-primary" value="Удалить задачу"/>
+        </form>
     </div>
-  </nav>
-  <div class="row">
-    <table class="table">
-      <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Название</th>
-        <th scope="col">Описание</th>
-        <th scope="col">Дата создания</th>
-        <th scope="col">Состояние</th>
-      </tr>
-      </thead>
-      <tbody>
-      <td th:text="${item.id}"></td>
-      <td th:text="${item.name}"></td>
-      <td th:text="${item.description}"></td>
-      <td th:text="${#dates.format(item.created, 'dd.MM.yyyy')}"></td>
-      <td>
-        <span th:text="${item.done} ? 'Завершена' : 'Не завершена'"></span>
-      </td>
-      </tbody>
-    </table>
-    <form>
-          <span th:if="${!item.done}">
-            <button type="submit" class="btn btn-primary" th:formaction="@{|/complete/${item.id}|}">Завершить задачу</button>
-            <button type="submit" class="btn btn-primary" th:formaction="@{|/formUpdateItem/${item.id}|}">Изменить задачу</button>
-          </span>
-      <button type="submit" class="btn btn-primary" th:formaction="@{|/delete/${item.id}|}">Удалить задачу</button>
-    </form>
-  </div>
 </div>
 </body>
 </html>

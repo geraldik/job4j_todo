@@ -28,9 +28,6 @@ public class ItemService {
         store.delete(item);
     }
 
-    public void setItemIsDone(Item item) {
-        store.setItemIsDone(item);
-    }
 
     public Collection<Item> findAll(Account account) {
         return store.findAll(account);
@@ -47,5 +44,10 @@ public class ItemService {
     public Item findById(int id) {
         return store.findById(id);
     }
+
+    public void completeItem(int id) {
+        store.completeItem(id);
+    }
 }
+
 

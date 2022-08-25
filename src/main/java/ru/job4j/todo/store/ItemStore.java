@@ -46,16 +46,6 @@ public class ItemStore {
         );
     }
 
-    public void setItemIsDone(final Item item) {
-        this.tx(
-                session -> {
-                    item.setDone(true);
-                    session.update(item);
-                    return session;
-                }
-        );
-    }
-
     public List<Item> findAll(final Account account) {
         return this.tx(
                 session -> session.createQuery("from Item  i where i.account = :account", Item.class)
@@ -87,6 +77,15 @@ public class ItemStore {
                 session -> session.createQuery("from Item i where i.id = :fId", Item.class)
                         .setParameter("fId", id)
                         .uniqueResult()
+        );
+    }
+
+    public void completeItem(final int id) {
+        this.tx(
+                session ->
+                    session.createQuery("update Item i set i.done = true where i.id=:fId")
+                            .setParameter("fId", id)
+                            .executeUpdate()
         );
     }
 

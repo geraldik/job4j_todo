@@ -21,12 +21,12 @@ public class Item {
     private String name;
     private String description;
 
-    private Timestamp created = Timestamp.valueOf(LocalDateTime.now());
+    private LocalDateTime created = LocalDateTime.now();
 
     private boolean done;
 
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", referencedColumnName = "account_id")
     private Account account;
 
@@ -40,7 +40,7 @@ public class Item {
     }
 
 
-    public Item(String name, String description, Timestamp created, boolean done) {
+    public Item(String name, String description, LocalDateTime created, boolean done) {
         this.name = name;
         this.description = description;
         this.created = created;

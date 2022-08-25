@@ -87,14 +87,15 @@ public class ItemController {
         return "addItem";
     }
 
-    @GetMapping("/complete/{itemId}")
+    @PostMapping("/complete/{itemId}")
     public String completeItem(@PathVariable("itemId") int id, Model model, HttpSession session) {
         SessionControl.getUserSession(model, session);
-        itemService.setItemIsDone(itemService.findById(id));
+        itemService.completeItem(id);
+//        itemService.setItemIsDone(itemService.findById(id));
         return "redirect:/allItems";
     }
 
-    @GetMapping("/delete/{itemId}")
+    @PostMapping("/delete/{itemId}")
         public String deleteItem(@PathVariable("itemId") int id) {
         itemService.delete(itemService.findById(id));
         return "redirect:/allItems";
