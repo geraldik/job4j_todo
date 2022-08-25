@@ -6,6 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import ru.job4j.todo.entity.Account;
 import ru.job4j.todo.entity.Item;
+import ru.job4j.todo.utility.TransactionService;
 
 import java.util.List;
 import java.util.function.Function;
@@ -15,92 +16,91 @@ public class ItemStore {
 
     private final SessionFactory sf;
 
+    private final TransactionService transactionService;
+
     public ItemStore(SessionFactory sf) {
         this.sf = sf;
+        transactionService = new TransactionService() {
+            @Override
+            public <T> T tx(Function<Session, T> command, SessionFactory sf) {
+                return TransactionService.super.tx(command, sf);
+            }
+        };
     }
 
     public Item create(final Item save) {
-        return this.tx(
+        return transactionService.tx(
                 session -> {
                     session.save(save);
                     return save;
-                }
+                }, sf
         );
     }
 
     public void update(final Item item) {
-        this.tx(
+        transactionService.tx(
                 session -> {
                     session.update(item);
                     return session;
-                }
+                }, sf
         );
     }
 
     public void delete(final Item item) {
-        this.tx(
+        transactionService.tx(
                 session -> {
                     session.delete(item);
                     return session;
-                }
+                }, sf
         );
     }
 
     public List<Item> findAll(final Account account) {
-        return this.tx(
+        return transactionService.tx(
                 session -> session.createQuery("from Item  i where i.account = :account", Item.class)
                         .setParameter("account", account)
-                        .list()
+                        .list(),
+                sf
         );
     }
 
     public List<Item> findNew(final Account account) {
-        return this.tx(
+        return transactionService.tx(
                 session -> session.createQuery("from Item i where i.done = false and i.account = :account",
                                 Item.class)
                         .setParameter("account", account)
-                        .list()
+                        .list(),
+                sf
         );
     }
 
     public List<Item> findCompleted(final Account account) {
-        return this.tx(
+        return transactionService.tx(
                 session -> session.createQuery("from Item i where i.done = true and i.account = :account",
                                 Item.class)
                         .setParameter("account", account)
-                        .list()
+                        .list(),
+                sf
         );
     }
 
     public Item findById(final int id) {
-        return this.tx(
+        return transactionService.tx(
                 session -> session.createQuery("from Item i where i.id = :fId", Item.class)
                         .setParameter("fId", id)
-                        .uniqueResult()
+                        .uniqueResult(),
+                sf
         );
     }
 
     public void completeItem(final int id) {
-        this.tx(
+        transactionService.tx(
                 session ->
-                    session.createQuery("update Item i set i.done = true where i.id=:fId")
-                            .setParameter("fId", id)
-                            .executeUpdate()
+                        session.createQuery("update Item i set i.done = true where i.id=:fId")
+                                .setParameter("fId", id)
+                                .executeUpdate(),
+                sf
         );
     }
 
-    private <T> T tx(final Function<Session, T> command) {
-        final Session session = sf.openSession();
-        final Transaction tx = session.beginTransaction();
-        try {
-            T rsl = command.apply(session);
-            tx.commit();
-            return rsl;
-        } catch (final Exception e) {
-            session.getTransaction().rollback();
-            throw e;
-        } finally {
-            session.close();
-        }
-    }
 }
