@@ -33,9 +33,7 @@ public class AccountStore {
                         + "and a.password = :password", Account.class)
                 .setParameter("login", login)
                 .setParameter("password", password)
-                .getResultList()
-                .stream()
-                .findFirst()
+                .uniqueResultOptional()
         );
     }
 

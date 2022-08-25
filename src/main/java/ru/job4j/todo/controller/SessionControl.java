@@ -5,7 +5,10 @@ import ru.job4j.todo.entity.Account;
 
 import javax.servlet.http.HttpSession;
 
-public class SessionControl {
+public final class SessionControl {
+
+    private SessionControl() {
+    }
 
     public static void getUserSession(Model model, HttpSession session) {
         Account account = (Account) session.getAttribute("account");

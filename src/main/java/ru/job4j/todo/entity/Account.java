@@ -3,6 +3,7 @@ package ru.job4j.todo.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,7 +25,7 @@ public class Account {
     private String password;
 
     @OneToMany(mappedBy = "account")
-    private List<Item> items;
+    private List<Item> items = new ArrayList<>();
 
     public Account(String name, String login, String password) {
         this.name = name;
