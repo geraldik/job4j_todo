@@ -12,24 +12,16 @@ import java.util.List;
 import java.util.function.Function;
 
 @Repository
-public class ItemStore {
+public class ItemStore implements TransactionService {
 
     private final SessionFactory sf;
 
-    private final TransactionService transactionService;
-
     public ItemStore(SessionFactory sf) {
         this.sf = sf;
-        transactionService = new TransactionService() {
-            @Override
-            public <T> T tx(Function<Session, T> command, SessionFactory sf) {
-                return TransactionService.super.tx(command, sf);
-            }
-        };
     }
 
     public Item create(final Item save) {
-        return transactionService.tx(
+        return this.tx(
                 session -> {
                     session.save(save);
                     return save;
@@ -38,7 +30,7 @@ public class ItemStore {
     }
 
     public void update(final Item item) {
-        transactionService.tx(
+        this.tx(
                 session -> {
                     session.update(item);
                     return session;
@@ -47,7 +39,7 @@ public class ItemStore {
     }
 
     public void delete(final Item item) {
-        transactionService.tx(
+        this.tx(
                 session -> {
                     session.delete(item);
                     return session;
@@ -56,7 +48,7 @@ public class ItemStore {
     }
 
     public List<Item> findAll(final Account account) {
-        return transactionService.tx(
+        return this.tx(
                 session -> session.createQuery("from Item  i where i.account = :account", Item.class)
                         .setParameter("account", account)
                         .list(),
@@ -65,7 +57,7 @@ public class ItemStore {
     }
 
     public List<Item> findNew(final Account account) {
-        return transactionService.tx(
+        return this.tx(
                 session -> session.createQuery("from Item i where i.done = false and i.account = :account",
                                 Item.class)
                         .setParameter("account", account)
@@ -75,7 +67,7 @@ public class ItemStore {
     }
 
     public List<Item> findCompleted(final Account account) {
-        return transactionService.tx(
+        return this.tx(
                 session -> session.createQuery("from Item i where i.done = true and i.account = :account",
                                 Item.class)
                         .setParameter("account", account)
@@ -85,7 +77,7 @@ public class ItemStore {
     }
 
     public Item findById(final int id) {
-        return transactionService.tx(
+        return this.tx(
                 session -> session.createQuery("from Item i where i.id = :fId", Item.class)
                         .setParameter("fId", id)
                         .uniqueResult(),
@@ -94,7 +86,7 @@ public class ItemStore {
     }
 
     public void completeItem(final int id) {
-        transactionService.tx(
+        this.tx(
                 session ->
                         session.createQuery("update Item i set i.done = true where i.id=:fId")
                                 .setParameter("fId", id)

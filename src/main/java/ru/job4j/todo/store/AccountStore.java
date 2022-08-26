@@ -11,24 +11,16 @@ import java.util.Optional;
 import java.util.function.Function;
 
 @Repository
-public class AccountStore {
+public class AccountStore implements TransactionService {
 
     private final SessionFactory sf;
 
-    private final TransactionService transactionService;
-
     public AccountStore(SessionFactory sf) {
         this.sf = sf;
-        transactionService = new TransactionService() {
-            @Override
-            public <T> T tx(Function<Session, T> command, SessionFactory sf) {
-                return TransactionService.super.tx(command, sf);
-            }
-        };
     }
 
     public Optional<Account> create(final Account account) {
-        return transactionService.tx(session -> {
+        return this.tx(session -> {
             Integer id = (Integer) session.save(account);
             if (id == null) {
                 return Optional.empty();
@@ -38,7 +30,7 @@ public class AccountStore {
     }
 
     public Optional<Account> findByLoginAndPas(final String login, final String password) {
-        return transactionService.tx(session -> session.createQuery("from Account a where a.login = :login "
+        return this.tx(session -> session.createQuery("from Account a where a.login = :login "
                                 + "and a.password = :password", Account.class)
                         .setParameter("login", login)
                         .setParameter("password", password)
