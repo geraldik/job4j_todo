@@ -1,20 +1,23 @@
 package ru.job4j.todo.store;
 
-import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import ru.job4j.todo.entity.Account;
 import ru.job4j.todo.entity.Item;
 import ru.job4j.todo.utility.TransactionService;
 
 import java.util.List;
-import java.util.function.Function;
 
 @Repository
 public class ItemStore implements TransactionService {
 
+    public static final String QUERY_FIND_NEW = "from Item i where i.done = false and i.account = :account";
+    public static final String QUERY_FIND_COMPLETED = "from Item i where i.done = true and i.account = :account";
+    public static final String QUERY_FIND_BY_ID = "from Item i where i.id = :fId";
+    public static final String QUERY_COMPLETE_ITEM = "update Item i set i.done = true where i.id=:fId";
     private final SessionFactory sf;
+
+    private static final String QUERY_FIND_ALL = "from Item  i where i.account = :account";
 
     public ItemStore(SessionFactory sf) {
         this.sf = sf;
@@ -49,7 +52,7 @@ public class ItemStore implements TransactionService {
 
     public List<Item> findAll(final Account account) {
         return this.tx(
-                session -> session.createQuery("from Item  i where i.account = :account", Item.class)
+                session -> session.createQuery(QUERY_FIND_ALL, Item.class)
                         .setParameter("account", account)
                         .list(),
                 sf
@@ -58,8 +61,7 @@ public class ItemStore implements TransactionService {
 
     public List<Item> findNew(final Account account) {
         return this.tx(
-                session -> session.createQuery("from Item i where i.done = false and i.account = :account",
-                                Item.class)
+                session -> session.createQuery(QUERY_FIND_NEW, Item.class)
                         .setParameter("account", account)
                         .list(),
                 sf
@@ -68,7 +70,8 @@ public class ItemStore implements TransactionService {
 
     public List<Item> findCompleted(final Account account) {
         return this.tx(
-                session -> session.createQuery("from Item i where i.done = true and i.account = :account",
+                session -> session.createQuery(QUERY_FIND_COMPLETED,
+
                                 Item.class)
                         .setParameter("account", account)
                         .list(),
@@ -78,7 +81,7 @@ public class ItemStore implements TransactionService {
 
     public Item findById(final int id) {
         return this.tx(
-                session -> session.createQuery("from Item i where i.id = :fId", Item.class)
+                session -> session.createQuery(QUERY_FIND_BY_ID, Item.class)
                         .setParameter("fId", id)
                         .uniqueResult(),
                 sf
@@ -88,7 +91,7 @@ public class ItemStore implements TransactionService {
     public void completeItem(final int id) {
         this.tx(
                 session ->
-                        session.createQuery("update Item i set i.done = true where i.id=:fId")
+                        session.createQuery(QUERY_COMPLETE_ITEM)
                                 .setParameter("fId", id)
                                 .executeUpdate(),
                 sf
