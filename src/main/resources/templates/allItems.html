@@ -55,6 +55,7 @@
                 <th scope="col">№</th>
                 <th scope="col">Название задачи</h>
                 <th scope="col">Дата создания</h>
+                <th scope="col">Категория</h>
                 <th scope="col">Статус</h>
             </tr>
             </thead>
@@ -71,6 +72,10 @@
                 </td>
                 <td>
                     <span th:text="${#temporals.format(item.created, 'dd-MM-yyyy HH:mm')}"></span>
+                </td>
+                <td>
+                    <span th:each="category, iterStat : ${item.getCategories()}"
+                          th:text="!${iterStat.last} ? ${category.name} + ' ,': ${category.name}"></span>
                 </td>
                 <td>
                     <span th:text="${item.done} ? 'Завершена' : 'Не завершена'"></span>

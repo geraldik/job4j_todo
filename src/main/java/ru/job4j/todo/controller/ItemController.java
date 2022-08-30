@@ -2,25 +2,29 @@ package ru.job4j.todo.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.job4j.todo.entity.Account;
+import ru.job4j.todo.entity.Category;
 import ru.job4j.todo.entity.Item;
+import ru.job4j.todo.service.CategoryService;
 import ru.job4j.todo.service.ItemService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 @Controller
 public class ItemController {
 
     private final ItemService itemService;
+    private final CategoryService categoryService;
 
-    public ItemController(ItemService itemService) {
+    public ItemController(ItemService itemService, CategoryService categoryService) {
         this.itemService = itemService;
+        this.categoryService = categoryService;
     }
 
     @GetMapping("/allItems")
@@ -55,7 +59,13 @@ public class ItemController {
 
 
     @PostMapping("/createItem")
-    public String createItem(@ModelAttribute Item item, Model model, HttpServletRequest req) {
+    public String createItem(@ModelAttribute Item item, Model model, HttpServletRequest req,
+                             @RequestParam(value = "category.id", required = false) List<Integer> categoriesId) {
+        Set<Category> categories = new HashSet<>();
+        for (Integer categoryId : categoriesId) {
+            categories.add(categoryService.findById(categoryId));
+        }
+        item.setCategories(categories);
         HttpSession session = req.getSession();
         SessionControl.getUserSession(model, session);
         Account account = (Account) session.getAttribute("account");
@@ -68,14 +78,21 @@ public class ItemController {
     public String formUpdateItem(@PathVariable("itemId") int id, Model model, HttpSession session) {
         SessionControl.getUserSession(model, session);
         model.addAttribute("item", itemService.findById(id));
+        model.addAttribute("categories", categoryService.findAll());
         return "updateItem";
     }
 
     @PostMapping("/updateItem")
-    public String updateItem(@ModelAttribute Item item,  Model model, HttpServletRequest req) {
+    public String updateItem(@ModelAttribute Item item,  Model model, HttpServletRequest req,
+                             @RequestParam(value = "category.id", required = false) List<Integer> categoriesId) {
         HttpSession session = req.getSession();
         SessionControl.getUserSession(model, session);
         Account account = (Account) session.getAttribute("account");
+        Set<Category> categories = new HashSet<>();
+        for (Integer categoryId : categoriesId) {
+            categories.add(categoryService.findById(categoryId));
+        }
+        item.setCategories(categories);
         item.setAccount(account);
         itemService.update(item);
         return "redirect:/allItems";
@@ -84,6 +101,7 @@ public class ItemController {
     @GetMapping("/formAddItem")
     public String formAddPost(Model model, HttpSession session) {
         SessionControl.getUserSession(model, session);
+        model.addAttribute("categories", categoryService.findAll());
         return "addItem";
     }
 

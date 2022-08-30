@@ -5,6 +5,8 @@ import lombok.*;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "items")
@@ -30,6 +32,13 @@ public class Item {
     @JoinColumn(name = "account_id", referencedColumnName = "account_id")
     private Account account;
 
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "items_category",
+            joinColumns = { @JoinColumn(name = "items_id") },
+            inverseJoinColumns = { @JoinColumn(name = "category_id") }
+    )
+    private Set<Category> categories = new HashSet<>();
     public Item(int id, String description) {
         this.id = id;
         this.description = description;

@@ -14,6 +14,8 @@ import java.util.function.Function;
 public class AccountStore implements TransactionService {
 
     private final SessionFactory sf;
+    public static final String FIND_BY_LOGIN_AND_PAS = "from Account a where a.login = :login "
+            + "and a.password = :password";
 
     public AccountStore(SessionFactory sf) {
         this.sf = sf;
@@ -23,6 +25,7 @@ public class AccountStore implements TransactionService {
         return this.tx(session -> {
             Integer id = (Integer) session.save(account);
             if (id == null) {
+
                 return Optional.empty();
             }
             return Optional.of(account);
@@ -30,8 +33,7 @@ public class AccountStore implements TransactionService {
     }
 
     public Optional<Account> findByLoginAndPas(final String login, final String password) {
-        return this.tx(session -> session.createQuery("from Account a where a.login = :login "
-                                + "and a.password = :password", Account.class)
+        return this.tx(session -> session.createQuery(FIND_BY_LOGIN_AND_PAS, Account.class)
                         .setParameter("login", login)
                         .setParameter("password", password)
                         .uniqueResultOptional(),
