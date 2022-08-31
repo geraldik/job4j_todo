@@ -69,7 +69,7 @@
                     <span th:text="${item.name}"></span>
                 </td>
                 <td>
-                    <span th:text="${#temporals.format(item.created, 'dd-MM-yyyy HH:mm')}"></span>
+                    <span th:text="${#dates.format(item.created, 'dd-MM-yyyy HH:mm')}"></span>
                 </td>
                 <td>
                     <span th:each="category, iterStat : ${item.getCategories()}"

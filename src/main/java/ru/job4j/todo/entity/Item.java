@@ -3,8 +3,7 @@ package ru.job4j.todo.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,7 +22,8 @@ public class Item {
     private String name;
     private String description;
 
-    private LocalDateTime created = LocalDateTime.now();
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date created = new Date(System.currentTimeMillis());
 
     private boolean done;
 
@@ -49,7 +49,7 @@ public class Item {
     }
 
 
-    public Item(String name, String description, LocalDateTime created, boolean done) {
+    public Item(String name, String description, Date created, boolean done) {
         this.name = name;
         this.description = description;
         this.created = created;
