@@ -12,11 +12,14 @@ import java.util.List;
 public class ItemStore implements TransactionService {
 
     private final SessionFactory sf;
-    public static final String QUERY_FIND_NEW = "from Item i join fetch i.categories where i.done = false and i.account = :account";
-    public static final String QUERY_FIND_COMPLETED = "from Item i join fetch i.categories where i.done = true and i.account = :account";
+    public static final String QUERY_FIND_NEW = "select distinct i from Item i  join fetch i.categories where i.done "
+            + "= false and i.account = :account";
+    public static final String QUERY_FIND_COMPLETED = "select distinct i from Item i  join fetch i.categories where"
+           + " i.done = true and i.account = :account";
     public static final String QUERY_FIND_BY_ID = "from Item i join fetch i.categories where i.id = :fId";
     public static final String QUERY_COMPLETE_ITEM = "update Item i set i.done = true where i.id=:fId";
-    private static final String QUERY_FIND_ALL = "from Item  i join fetch i.categories   where i.account = :account";
+    private static final String QUERY_FIND_ALL = "select distinct i from Item  i join fetch i.categories"
+           + " where i.account = :account";
 
     public ItemStore(SessionFactory sf) {
         this.sf = sf;
